@@ -11,15 +11,15 @@ A simple and efficient backend service to track, filter, and manage personal exp
 - ✔ Calculate Total Expenses
 ## Tech Stack
 
-- Java 21
-- Spring Boot
+- Java 25
+- Spring Boot 4.1.0
 - Gradle
 - JUnit 5
 - Mockito
 - Lombok
 ## Prerequisites
 
-- Java 21
+- Java 25
 - Git
 ## Installation
 
