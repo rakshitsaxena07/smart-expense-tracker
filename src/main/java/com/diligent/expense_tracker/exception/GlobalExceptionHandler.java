@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -65,6 +66,26 @@ public class GlobalExceptionHandler {
             error.put("message", "Invalid category. Allowed values: FOOD, TRANSPORT, BILLS, SHOPPING, ENTERTAINMENT, OTHER");
         } else {
             error.put("message", "Malformed JSON request.");
+        }
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request) {
+
+        Map<String, Object> error = new HashMap<>();
+
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status", HttpStatus.BAD_REQUEST.value());
+        error.put("path", request.getRequestURI());
+
+        if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
+            error.put("message", "Invalid category. Allowed values: FOOD, TRANSPORT, BILLS, SHOPPING, ENTERTAINMENT, OTHER");
+        } else {
+            error.put("message", "Invalid request parameter.");
         }
 
         return ResponseEntity.badRequest().body(error);
