@@ -23,8 +23,9 @@ AI helped me with:
 - Choosing `BigDecimal` for handling monetary values.
 - Understanding why constructor injection is preferred over field injection.
 - Implementing exception handling using `ResourceNotFoundException` and `GlobalExceptionHandler`.
+- Identifying certain edge cases for API testing and improving exception handling based on those test results.
 - Reviewing service and controller implementations.
-- Writing clean Git commit messages following Conventional Commits.
+- Formatting readme file
 
 ---
 
@@ -35,6 +36,7 @@ I implemented the project myself and reviewed every AI suggestion before using i
 I verified each feature by:
 
 - Compiling the project.
+-  Thinking, implementing and refactoring business logic.
 - Running unit tests.
 - Testing the APIs using Postman and cURL.
 - Modifying AI-generated suggestions whenever they did not match my project structure or coding style.
@@ -58,4 +60,4 @@ Some AI suggestions were intentionally not used:
 
 ## What I Learned
 
-Using AI helped me understand the reasoning behind design decisions instead of only generating code. It improved my understanding of DTOs, validation, exception handling, dependency injection, and clean REST API design.
+Using AI helped me understand the reasoning behind design decisions instead of only generating code. It improved my understanding of DTOs, validation, exception handling, dependency injection, and clean REST API design. My previous knowledge and understanding from documentation helped me decide which AI suggestions were useful for my project and which ones were not. This helped me use AI more effectively instead of accepting every suggestion directly.
