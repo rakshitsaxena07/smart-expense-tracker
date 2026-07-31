@@ -88,4 +88,10 @@ src/
 
 Unit tests have been written for the service and controller layers using JUnit 5 and Mockito.
 
- 
+## API Documentation
+
+Swagger UI is available after starting the application:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```

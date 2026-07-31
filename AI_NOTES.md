@@ -38,6 +38,7 @@ I verified each feature by:
 - Running unit tests.
 - Testing the APIs using Postman and cURL.
 - Modifying AI-generated suggestions whenever they did not match my project structure or coding style.
+- Verified generated OpenAPI documentation using Swagger UI in the browser.
 
 ---
 
