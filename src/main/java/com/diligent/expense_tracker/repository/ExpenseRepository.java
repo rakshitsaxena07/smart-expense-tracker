@@ -15,20 +15,4 @@ public class ExpenseRepository {
         expenses.put(expense.getId(), expense);
         return expense;
     }
-
-    public List<Expense> findAll() {
-        return new ArrayList<>(expenses.values());
-    }
-
-    public List<Expense> findByCategory(Category category) {
-        return expenses.values().stream().filter(expense -> expense.getCategory() == category).collect(Collectors.toList());
-    }
-
-    public Optional<Expense> findById(UUID id) {
-        return Optional.ofNullable(expenses.get(id));
-    }
-
-    public void deleteById(UUID id) {
-        expenses.remove(id);
-    }
 }
