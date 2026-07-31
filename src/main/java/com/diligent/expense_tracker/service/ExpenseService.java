@@ -7,6 +7,7 @@ import com.diligent.expense_tracker.model.Expense;
 import com.diligent.expense_tracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,5 +46,13 @@ public class ExpenseService {
         repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
 
         repository.deleteById(id);
+    }
+
+    public BigDecimal getTotalExpenses() {
+        return repository.findAll().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal getTotalExpensesByCategory(Category category) {
+        return repository.findByCategory(category).stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

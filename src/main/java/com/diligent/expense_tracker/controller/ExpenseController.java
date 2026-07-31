@@ -1,6 +1,7 @@
 package com.diligent.expense_tracker.controller;
 
 import com.diligent.expense_tracker.dto.ExpenseRequest;
+import com.diligent.expense_tracker.dto.TotalExpenseResponse;
 import com.diligent.expense_tracker.model.Category;
 import com.diligent.expense_tracker.model.Expense;
 import com.diligent.expense_tracker.service.ExpenseService;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,5 +52,21 @@ public class ExpenseController {
         expenseService.deleteExpense(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<TotalExpenseResponse> getTotalExpenses() {
+
+        BigDecimal total = expenseService.getTotalExpenses();
+
+        return ResponseEntity.ok(new TotalExpenseResponse(total));
+    }
+
+    @GetMapping(value = "/total", params = "category")
+    public ResponseEntity<TotalExpenseResponse> getTotalExpensesByCategory(@RequestParam Category category) {
+
+        BigDecimal total = expenseService.getTotalExpensesByCategory(category);
+
+        return ResponseEntity.ok(new TotalExpenseResponse(total));
     }
 }

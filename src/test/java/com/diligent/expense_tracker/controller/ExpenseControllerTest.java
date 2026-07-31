@@ -128,4 +128,25 @@ class ExpenseControllerTest {
                 .andExpect(jsonPath("$.message").value(errorMessage))
                 .andExpect(jsonPath("$.status").value(404));
     }
+
+    @Test
+    void shouldReturnTotalExpensesAndStatus200() throws Exception {
+        when(expenseService.getTotalExpenses()).thenReturn(new BigDecimal("150.75"));
+
+        mockMvc.perform(get("/expenses/total").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(150.75));
+
+        verify(expenseService).getTotalExpenses();
+    }
+
+    @Test
+    void shouldReturnTotalExpensesByCategoryAndStatus200() throws Exception {
+        when(expenseService.getTotalExpensesByCategory(Category.FOOD)).thenReturn(new BigDecimal("45.50"));
+
+        mockMvc.perform(get("/expenses/total").param("category", "FOOD").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(45.50));
+
+        verify(expenseService).getTotalExpensesByCategory(Category.FOOD);
+    }
 }

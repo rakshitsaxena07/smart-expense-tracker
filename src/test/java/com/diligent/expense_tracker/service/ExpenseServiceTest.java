@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -123,5 +124,43 @@ class ExpenseServiceTest {
 
         verify(expenseRepository).findById(id);
         verify(expenseRepository, never()).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void shouldCalculateTotalOfAllExpenses() {
+        // 1. Arrange: Create expenses with known amounts (10.50 + 20.00 = 30.50)
+        Expense e1 = new Expense(UUID.randomUUID(), "Coffee", new BigDecimal("10.50"), Category.FOOD, LocalDate.now());
+        Expense e2 = new Expense(UUID.randomUUID(), "Bus", new BigDecimal("20.00"), Category.TRANSPORT, LocalDate.now());
+
+        when(expenseRepository.findAll()).thenReturn(List.of(e1, e2));
+
+        // 2. Act
+        BigDecimal total = expenseService.getTotalExpenses();
+
+        // 3. Assert
+        assertEquals(new BigDecimal("30.50"), total);
+        verify(expenseRepository).findAll();
+    }
+
+    @Test
+    void shouldReturnZeroWhenNoExpensesExist() {
+        when(expenseRepository.findAll()).thenReturn(Collections.emptyList());
+
+        BigDecimal total = expenseService.getTotalExpenses();
+
+        assertEquals(BigDecimal.ZERO, total);
+    }
+
+    @Test
+    void shouldCalculateTotalExpensesByCategory() {
+        Expense exp1 = new Expense(UUID.randomUUID(), "Lunch", new BigDecimal("15.00"), Category.FOOD, LocalDate.now());
+        Expense exp2 = new Expense(UUID.randomUUID(), "Coffee", new BigDecimal("5.00"), Category.FOOD, LocalDate.now());
+
+        when(expenseRepository.findByCategory(Category.FOOD)).thenReturn(List.of(exp1, exp2));
+
+        BigDecimal total = expenseService.getTotalExpensesByCategory(Category.FOOD);
+
+        assertEquals(new BigDecimal("20.00"), total);
+        verify(expenseRepository).findByCategory(Category.FOOD);
     }
 }
