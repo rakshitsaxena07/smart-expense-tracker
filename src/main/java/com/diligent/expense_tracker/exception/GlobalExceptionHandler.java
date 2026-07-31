@@ -3,6 +3,7 @@ package com.diligent.expense_tracker.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,6 +46,26 @@ public class GlobalExceptionHandler {
 
         error.put("errors", validationErrors);
         error.put("path", request.getRequestURI());
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
+
+        Map<String, Object> error = new HashMap<>();
+
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status", HttpStatus.BAD_REQUEST.value());
+        error.put("path", request.getRequestURI());
+
+        if (ex.getMessage().contains("Category")) {
+            error.put("message", "Invalid category. Allowed values: FOOD, TRANSPORT, BILLS, SHOPPING, ENTERTAINMENT, OTHER");
+        } else {
+            error.put("message", "Malformed JSON request.");
+        }
 
         return ResponseEntity.badRequest().body(error);
     }
