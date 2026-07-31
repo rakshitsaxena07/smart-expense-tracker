@@ -1,6 +1,7 @@
 package com.diligent.expense_tracker.service;
 
 import com.diligent.expense_tracker.dto.ExpenseRequest;
+import com.diligent.expense_tracker.model.Category;
 import com.diligent.expense_tracker.model.Expense;
 import com.diligent.expense_tracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,9 @@ public class ExpenseService {
 
     public List<Expense> getAllExpenses() {
         return repository.findAll();
+    }
+
+    public List<Expense> getExpensesByCategory(Category category) {
+        return repository.findByCategory(category);
     }
 }

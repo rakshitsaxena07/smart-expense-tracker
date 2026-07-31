@@ -81,4 +81,25 @@ class ExpenseControllerTest {
                 .andExpect(jsonPath("$[1].title").value("Bus"))
                 .andExpect(jsonPath("$[1].category").value("TRANSPORT"));
     }
+
+    @Test
+    void shouldReturnExpensesByCategoryAndStatus200() throws Exception {
+
+        Expense foodExpense = new Expense(
+                UUID.randomUUID(),
+                "Coffee",
+                new BigDecimal("4.50"),
+                Category.FOOD,
+                LocalDate.now()
+        );
+
+        List<Expense> mockExpenses = List.of(foodExpense);
+
+        when(expenseService.getExpensesByCategory(Category.FOOD)).thenReturn(mockExpenses);
+
+        mockMvc.perform(get("/expenses").param("category", "FOOD").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].title").value("Coffee"))
+                .andExpect(jsonPath("$[0].category").value("FOOD"));
+    }
 }

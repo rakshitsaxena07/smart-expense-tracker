@@ -1,5 +1,6 @@
 package com.diligent.expense_tracker.repository;
 
+import com.diligent.expense_tracker.model.Category;
 import com.diligent.expense_tracker.model.Expense;
 import org.springframework.stereotype.Repository;
 
@@ -17,5 +18,12 @@ public class ExpenseRepository {
 
     public List<Expense> findAll() {
         return new ArrayList<>(expenses.values());
+    }
+
+    public List<Expense> findByCategory(Category category) {
+        return expenses.values()
+                .stream()
+                .filter(expense -> expense.getCategory() == category)
+                .toList();
     }
 }

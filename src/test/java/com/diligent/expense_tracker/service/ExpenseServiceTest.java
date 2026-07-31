@@ -74,4 +74,23 @@ class ExpenseServiceTest {
 
         verify(expenseRepository).findAll();
     }
+
+    @Test
+    void shouldReturnExpensesByCategory() {
+
+        Expense foodExpense = new Expense(UUID.randomUUID(), "Coffee", new BigDecimal("4.50"), Category.FOOD,
+                LocalDate.now());
+
+        List<Expense> mockFoodExpenses = List.of(foodExpense);
+
+        when(expenseRepository.findByCategory(Category.FOOD)).thenReturn(mockFoodExpenses);
+
+        List<Expense> result = expenseService.getExpensesByCategory(Category.FOOD);
+
+        assertEquals(1, result.size());
+        assertEquals("Coffee", result.get(0).getTitle());
+        assertEquals(Category.FOOD, result.get(0).getCategory());
+
+        verify(expenseRepository).findByCategory(Category.FOOD);
+    }
 }
