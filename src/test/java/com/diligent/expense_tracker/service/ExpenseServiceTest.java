@@ -1,6 +1,7 @@
 package com.diligent.expense_tracker.service;
 
 import com.diligent.expense_tracker.dto.ExpenseRequest;
+import com.diligent.expense_tracker.exception.ResourceNotFoundException;
 import com.diligent.expense_tracker.model.Category;
 import com.diligent.expense_tracker.model.Expense;
 import com.diligent.expense_tracker.repository.ExpenseRepository;
@@ -14,10 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -92,5 +93,35 @@ class ExpenseServiceTest {
         assertEquals(Category.FOOD, result.get(0).getCategory());
 
         verify(expenseRepository).findByCategory(Category.FOOD);
+    }
+
+    @Test
+    void deleteExpense_ShouldDelete_WhenExpenseExists() {
+
+        UUID id = UUID.randomUUID();
+        Expense mockExpense = new Expense();
+        mockExpense.setId(id);
+
+        when(expenseRepository.findById(id)).thenReturn(Optional.of(mockExpense));
+
+        expenseService.deleteExpense(id);
+
+        verify(expenseRepository).findById(id);
+        verify(expenseRepository).deleteById(id);
+    }
+
+    @Test
+    void deleteExpense_ShouldThrowException_WhenExpenseDoesNotExist() {
+
+        UUID id = UUID.randomUUID();
+
+        when(expenseRepository.findById(id)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {expenseService.deleteExpense(id);});
+
+        assertEquals("Expense not found with id: " + id, exception.getMessage());
+
+        verify(expenseRepository).findById(id);
+        verify(expenseRepository, never()).deleteById(any(UUID.class));
     }
 }

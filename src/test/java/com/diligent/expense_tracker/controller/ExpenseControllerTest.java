@@ -2,6 +2,7 @@ package com.diligent.expense_tracker.controller;
 
 
 import com.diligent.expense_tracker.dto.ExpenseRequest;
+import com.diligent.expense_tracker.exception.ResourceNotFoundException;
 import com.diligent.expense_tracker.model.Category;
 import com.diligent.expense_tracker.model.Expense;
 import com.diligent.expense_tracker.service.ExpenseService;
@@ -19,10 +20,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ExpenseController.class)
@@ -101,5 +101,31 @@ class ExpenseControllerTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.size()").value(1))
                 .andExpect(jsonPath("$[0].title").value("Coffee"))
                 .andExpect(jsonPath("$[0].category").value("FOOD"));
+    }
+
+    @Test
+    void shouldDeleteExpenseAndReturn204() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        doNothing().when(expenseService).deleteExpense(id);
+
+        mockMvc.perform(delete("/expenses/" + id)).andExpect(status().isNoContent());
+
+        verify(expenseService).deleteExpense(id);
+    }
+
+    @Test
+    void shouldReturn404_WhenDeletingNonExistingExpense() throws Exception {
+
+        UUID id = UUID.randomUUID();
+        String errorMessage = "Expense not found with id: " + id;
+
+        doThrow(new ResourceNotFoundException(errorMessage))
+                .when(expenseService).deleteExpense(id);
+
+        mockMvc.perform(delete("/expenses/" + id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(errorMessage))
+                .andExpect(jsonPath("$.status").value(404));
     }
 }

@@ -26,4 +26,12 @@ public class ExpenseRepository {
                 .filter(expense -> expense.getCategory() == category)
                 .toList();
     }
+
+    public Optional<Expense> findById(UUID id) {
+        return Optional.ofNullable(expenses.get(id));
+    }
+
+    public void deleteById(UUID id) {
+        expenses.remove(id);
+    }
 }
