@@ -75,6 +75,7 @@ This project uses an in-memory `HashMap` to store expenses. Data will be lost wh
 ```
 src/
  ├── main/
+ │   ├── config
  │   ├── controller
  │   ├── dto
  │   ├── exception
