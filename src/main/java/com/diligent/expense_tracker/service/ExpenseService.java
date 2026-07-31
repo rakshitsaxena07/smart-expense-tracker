@@ -5,6 +5,7 @@ import com.diligent.expense_tracker.model.Expense;
 import com.diligent.expense_tracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,5 +28,9 @@ public class ExpenseService {
         );
 
         return repository.save(expense);
+    }
+
+    public List<Expense> getAllExpenses() {
+        return repository.findAll();
     }
 }

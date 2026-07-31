@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,5 +54,24 @@ class ExpenseServiceTest {
         assertEquals(Category.FOOD, result.getCategory());
 
         verify(expenseRepository).save(any(Expense.class));
+    }
+
+    @Test
+    void shouldReturnAllExpenses() {
+
+        Expense expense1 = new Expense(UUID.randomUUID(), "Coffee", new BigDecimal("4.50"), Category.FOOD, LocalDate.now());
+        Expense expense2 = new Expense(UUID.randomUUID(), "Bus", new BigDecimal("2.00"), Category.TRANSPORT, LocalDate.now());
+
+        List<Expense> mockExpenses = List.of(expense1, expense2);
+
+        when(expenseRepository.findAll()).thenReturn(mockExpenses);
+
+        List<Expense> result = expenseService.getAllExpenses();
+
+        assertEquals(2, result.size());
+        assertEquals("Coffee", result.get(0).getTitle());
+        assertEquals("Bus", result.get(1).getTitle());
+
+        verify(expenseRepository).findAll();
     }
 }

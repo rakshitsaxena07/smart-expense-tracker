@@ -15,10 +15,12 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,5 +57,28 @@ class ExpenseControllerTest {
                         .andExpect(jsonPath("$.amount").value(4.50))
                         .andExpect(jsonPath("$.category").value("FOOD"))
                         .andExpect(jsonPath("$.id").exists());
+    }
+
+    @Test
+    void shouldReturnAllExpensesAndStatus200() throws Exception {
+        Expense expense1 = new Expense(
+                UUID.randomUUID(), "Coffee", new BigDecimal("4.50"), Category.FOOD, LocalDate.now());
+        Expense expense2 = new Expense(
+                UUID.randomUUID(), "Bus", new BigDecimal("2.00"), Category.TRANSPORT, LocalDate.now());
+
+        List<Expense> mockExpenses = List.of(expense1, expense2);
+
+        when(expenseService.getAllExpenses()).thenReturn(mockExpenses);
+
+        mockMvc.perform(get("/expenses").contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(status().isOk())
+
+                .andExpect(jsonPath("$.size()").value(2))
+
+                .andExpect(jsonPath("$[0].title").value("Coffee"))
+                .andExpect(jsonPath("$[0].amount").value(4.50))
+                .andExpect(jsonPath("$[1].title").value("Bus"))
+                .andExpect(jsonPath("$[1].category").value("TRANSPORT"));
     }
 }
